@@ -1,0 +1,115 @@
+
+import os
+import time
+
+import librosa
+import matplotlib
+matplotlib.use("Agg")  # No visible graph window
+import matplotlib.pyplot as plt
+import numpy as np
+import sounddevice as sd
+
+SAMPLE_RATE = 16000
+RECORD_SECONDS = 2
+THRESHOLD = 0.85  # Demo value; must be calibrated
+REFERENCE_FILE = "authorized_voice.wav"
+DEBUG_FOLDER = "voice_debug"
+
+os.makedirs(DEBUG_FOLDER, exist_ok=True)
+
+
+def extract_features(audio):
+    # Normalize the audio volume
+    audio = audio.astype(np.float32)
+    audio = audio / (np.max(np.abs(audio)) + 1e-8)
+
+    # Extract MFCCs: compact representations of the voice spectrum
+    mfcc = librosa.feature.mfcc(
+        y=audio,
+        sr=SAMPLE_RATE,
+        n_mfcc=20,
+        n_fft=512,
+        hop_length=160
+    )
+
+    # Average across time to create a feature vector
+    return np.mean(mfcc, axis=1)
+
+
+def cosine_similarity(a, b):
+    denominator = np.linalg.norm(a) * np.linalg.norm(b)
+    if denominator < 1e-8:
+        return 0.0
+    return float(np.dot(a, b) / denominator)
+
+
+def save_hidden_graph(audio, iteration):
+    # Save the frequency spectrum without opening a window
+    frequencies = np.fft.rfftfreq(
+        len(audio), d=1 / SAMPLE_RATE
+    )
+    spectrum = np.abs(np.fft.rfft(audio))
+
+    plt.figure(figsize=(8, 3))
+    plt.plot(frequencies, spectrum)
+    plt.xlabel("Frequency (Hz)")
+    plt.ylabel("Magnitude")
+    plt.title("Microphone Frequency Spectrum")
+    plt.xlim(0, 4000)
+    plt.tight_layout()
+
+    filename = os.path.join(
+        DEBUG_FOLDER, f"spectrum_{iteration:05d}.png"
+    )
+    plt.savefig(filename)
+    plt.close()
+
+
+# Load the enrolled voice
+reference_audio, _ = librosa.load(
+    REFERENCE_FILE, sr=SAMPLE_RATE, mono=True
+)
+reference_features = extract_features(reference_audio)
+
+print("Voice verification system started.")
+
+iteration = 0
+
+try:
+    while True:
+        # Capture a new microphone sample
+        audio = sd.rec(
+            int(RECORD_SECONDS * SAMPLE_RATE),
+            samplerate=SAMPLE_RATE,
+            channels=1,
+            dtype="float32"
+        )
+        sd.wait()
+        audio = audio.flatten()
+
+        iteration += 1
+
+        # Ignore near-silence
+        if np.sqrt(np.mean(audio ** 2)) < 0.01:
+            print("No clear voice detected.")
+            continue
+
+        # Extract features and graph the sample in the background
+        current_features = extract_features(audio)
+        save_hidden_graph(audio, iteration)
+
+        # Compare against the authorized voice
+        score = cosine_similarity(
+            reference_features, current_features
+        )
+
+        if score >= THRESHOLD:
+            print(f"ACCESS GRANTED (demo score: {score:.3f})")
+            # TODO: Trigger your authorized action here
+        else:
+            print(f"ACCESS DENIED (demo score: {score:.3f})")
+
+        time.sleep(0.1)
+
+except KeyboardInterrupt:
+    print("Voice verification stopped.")
