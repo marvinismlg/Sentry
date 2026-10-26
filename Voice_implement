@@ -94,6 +94,8 @@ try:
             print("No clear voice detected.")
             continue
 
+        REFERENCE_FILE = "authorized_voice.wav"
+
         # Extract features and graph the sample in the background
         current_features = extract_features(audio)
         save_hidden_graph(audio, iteration)
