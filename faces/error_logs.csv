@@ -1,0 +1,17 @@
+Timestamp,Function Name,Error Type,Message,Severity
+20261027-220953,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261027-220953,recognition_worker,Facial Recognition,Recognition service failed to process image | module 'face_recognition' has no attribute 'load_image_file',High
+20261027-222017,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | [Errno 2] No such file or directory: 'C:\\Users\\marvi\\PycharmProjects\\faces\\marvin.png',High
+20261027-222017,recognition_worker,Facial Recognition,Recognition service failed to process image | [Errno 2] No such file or directory: 'C:\\Users\\marvi\\PycharmProjects\\faces\\marvin.png',High
+20261027-222018,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | [Errno 2] No such file or directory: 'C:\\Users\\marvi\\PycharmProjects\\faces\\marvin.png',High
+20261027-222018,recognition_worker,Facial Recognition,Recognition service failed to process image | [Errno 2] No such file or directory: 'C:\\Users\\marvi\\PycharmProjects\\faces\\marvin.png',High
+20261027-222211,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261027-222211,process_image_frame,Face Verification,Face verification failed | Detected 0 faces,Mid
+20261027-222215,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261027-222916,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261027-222917,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261027-222926,process_image_frame,Face Verification,Face verification failed | Face distance: 0.988,Mid
+20261027-222926,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261027-222934,process_image_frame,Face Verification,Face verification failed | Face distance: 0.876,Mid
+20261027-222934,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261027-222944,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High

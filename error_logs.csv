@@ -1,0 +1,38 @@
+Timestamp,Function Name,Error Type,Message,Severity
+20261027-172754,camera,Camera Initialization,Camera device could not be opened,High
+20261027-172804,run_recognition,Missing Camera Frame,Facial recognition requested without an available frame,Mid
+20261027-202138,camera,Camera Initialization,Camera device could not be opened,High
+20261027-202550,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-202622,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-202622,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-202623,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-202627,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-204006,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-204032,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-204033,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-205722,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-205722,recognition_worker,Facial Recognition,Recognition service failed to process image | Recognition service unavailable,High
+20261027-205731,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-205731,recognition_worker,Facial Recognition,Recognition service failed to process image | Recognition service unavailable,High
+20261027-214421,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-214421,recognition_worker,Facial Recognition,Recognition service failed to process image | Recognition service unavailable,High
+20261027-214433,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-214433,recognition_worker,Facial Recognition,Recognition service failed to process image | Recognition service unavailable,High
+20261027-214436,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-214436,recognition_worker,Facial Recognition,Recognition service failed to process image | Recognition service unavailable,High
+20261027-214440,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-214440,recognition_worker,Facial Recognition,Recognition service failed to process image | Recognition service unavailable,High
+20261027-214522,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-214522,recognition_worker,Facial Recognition,Recognition service failed to process image | Recognition service unavailable,High
+20261027-214535,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-214535,recognition_worker,Facial Recognition,Recognition service failed to process image | Recognition service unavailable,High
+20261027-214549,recognition_worker,Recognition Service,Recognition service could not be imported,High
+20261027-214549,recognition_worker,Facial Recognition,Recognition service failed to process image | Recognition service unavailable,High
+20261027-214900,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261027-214900,recognition_worker,Facial Recognition,Recognition service failed to process image | module 'face_recognition' has no attribute 'load_image_file',High
+20261027-214901,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261027-214901,recognition_worker,Facial Recognition,Recognition service failed to process image | module 'face_recognition' has no attribute 'load_image_file',High
+20261027-214902,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261027-214902,recognition_worker,Facial Recognition,Recognition service failed to process image | module 'face_recognition' has no attribute 'load_image_file',High
+20261027-221431,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261027-221431,recognition_worker,Facial Recognition,Recognition service failed to process image | module 'face_recognition' has no attribute 'load_image_file',High
