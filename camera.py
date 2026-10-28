@@ -4,7 +4,13 @@ from queue import Queue, Empty
 from PIL import Image
 import importlib.util
 from pathlib import Path
+# Son
+import os
+import time
 
+# Command to run the virtual environment
+# First type "cd sentry" then copy and paste the command
+# .\faces\.venv\Scripts\python.exe .\camera.py
 # Were gonna have to use some extra libraries... I want to separate the recognition code from the webcam code just so we don't have files that are 400 lines long
 
 path = Path(__file__).resolve().parent / "face_recognition.py"
@@ -125,6 +131,30 @@ ctk.CTkLabel(frame, text="Raspberry Pi 5 - Recognition System", font=ctk.CTkFont
 cam_label = ctk.CTkLabel(frame, text="Starting camera...", width=W, height=H)
 cam_label.pack(pady=10)
 
+def capture_webcam_screenshot():
+    save_folder = "faces_list"
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print("Error: Could not open webcam.")
+        return
+    time.sleep(0.5)
+    ret, frame = cap.read()
+    if ret:
+        filename = f"face_{int(time.time())}.jpg"
+        filepath = os.path.join(save_folder, filename)
+        cv2.imwrite(filepath, frame)
+        print(f"Saved to: {filepath}")
+    else:
+        print("Cannot read ts")
+    cap.release()
+
+# Adding a webcam screenshot feature that automatically saves photos of your face to the "faces" folder
+screenshot_button = ctk.CTkButton(master=frame, text="Take a webcam screenshot", font=("Arial Bold", 20), text_color="White", command=capture_webcam_screenshot)
+screenshot_button.pack(pady=20)
+
+
 # camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
 camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 camera.set(cv2.CAP_PROP_FRAME_WIDTH, W)
@@ -214,7 +244,7 @@ def recognition_done(success=False, error=None):
         print("Granted: Face verified")
         mic_status.configure(text="Access Granted: Face Verified")
     else:
-        print("Denied:", error or "Face not recognized")
+        print("Denied:", error or "External Error")
         mic_status.configure(text="Access Denied: Face Not Recognized")
         if error: error_logging("recognition_failure", error)
 

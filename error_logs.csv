@@ -36,3 +36,30 @@ Timestamp,Function Name,Error Type,Message,Severity
 20261027-214902,recognition_worker,Facial Recognition,Recognition service failed to process image | module 'face_recognition' has no attribute 'load_image_file',High
 20261027-221431,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
 20261027-221431,recognition_worker,Facial Recognition,Recognition service failed to process image | module 'face_recognition' has no attribute 'load_image_file',High
+20261028-102720,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261028-102721,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | unsupported operand type(s) for -: 'dict' and 'float',High
+20261028-102721,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261028-102728,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | unsupported operand type(s) for -: 'dict' and 'float',High
+20261028-102728,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261028-103847,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261028-103847,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261028-104414,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261028-104414,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261028-104414,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261028-104414,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261028-104418,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261028-104418,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261028-104421,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261028-104421,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261028-104422,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261028-104422,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261028-104423,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261028-104423,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261028-104611,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261028-104611,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261028-104612,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261028-104612,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261028-104613,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261028-104613,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261028-104617,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261028-104617,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High

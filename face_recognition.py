@@ -1,6 +1,6 @@
 import cv2, csv, datetime, sys, importlib
 from pathlib import Path
-
+import os
 # system module and path import stuff
 
 project_root = str(Path(__file__).resolve().parent)
@@ -14,6 +14,7 @@ finally:
     sys.path = original_path
 from pathlib import Path
 from functools import lru_cache
+import os
 
 # I'll add error logging here as well, just in case.
 
@@ -25,8 +26,16 @@ Error_Logs = Path("error_logs.csv")
 # Here is the terminal copy paste: .\.venv\Scripts\python.exe ..\camera.py
 
 # Also, below is a hardcoded path that only works with my computer and with windows, when uploading to the Pi, we'll need to change it later
-face_image = Path(r"C:\Users\marvi\PycharmProjects\Sentry\faces\marvin.png")
+
+faces_folder = Path(__file__).resolve().parent / "faces"
+
+faces_list = [
+    image for image in faces_folder.iterdir()
+    if image.suffix.lower() in (".png", ".jpg", ".jpeg")
+]
+# face_image = Path(r"C:\Users\marvi\PycharmProjects\Sentry\faces\marvin.png")
 tolerance = 0.45
+
 
 # Error logging flow just in case the recognition has any errors
 
@@ -73,15 +82,26 @@ def error_logging(error_key, details=""):
         print("Error logging failed:", e)
 
 @lru_cache(maxsize=1)
+# GOGGINS GOGGINS GOGGINS GOGGINS
+# I'm changing this func so that it loops through the faces folder and compares each individual face with the face of the person trying to authenticate
+# If any of the faces match, it authenticates the person, if none of them match, it still keeps the red flashing
+
+# SON
 def load_known_face():
-    try:
-        image = face_recognition.load_image_file(str(face_image))
-        encodings = face_recognition.face_encodings(image)
-        if len(encodings) != 1: raise ValueError("Reference image must contain exactly one face")
-        return encodings[0]
-    except Exception as e:
-        error_logging("reference_image", str(e))
-        raise
+    authorized_faces = {}
+    for face_image in faces_list:
+        try:
+            image = face_recognition.load_image_file(str(face_image))
+            encodings = face_recognition.face_encodings(image)
+            if len(encodings) != 1:
+                raise ValueError(f"{face_image.name} must contain exactly one face")
+            authorized_faces[face_image.stem] = encodings[0]
+        except Exception as e:
+            error_logging("reference_image", str(e))
+    if not authorized_faces:
+        error_logging("reference_image", "No valid authorized faces found")
+        raise ValueError("No valid authorized faces found")
+    return authorized_faces
 
 def scan_frame_for_faces(raw_bgr_frame):
     if raw_bgr_frame is None:
@@ -109,11 +129,11 @@ def scan_frame_for_faces(raw_bgr_frame):
 
 # I lowk vibecoded ts, but I verified it to make sure all the code works
 def process_image_frame(raw_bgr_frame):
-    known_face = load_known_face()
     if raw_bgr_frame is None:
         error_logging("invalid_frame")
         return False
     try:
+        known_faces = load_known_face()
         rgb = cv2.cvtColor(raw_bgr_frame, cv2.COLOR_BGR2RGB)
         locations = face_recognition.face_locations(rgb)
         if len(locations) != 1:
@@ -123,13 +143,17 @@ def process_image_frame(raw_bgr_frame):
         if len(encodings) != 1:
             error_logging("recognition_failure", "Could not encode detected face")
             return False
-        distance = face_recognition.face_distance([known_face], encodings[0])[0]
-        verified = bool(face_recognition.compare_faces([known_face], encodings[0], tolerance=tolerance)[0])
-        print(f"Face distance: {distance:.3f} | Verified: {verified}")
-        if not verified: error_logging("recognition_failure", f"Face distance: {distance:.3f}")
-        return verified
+
+        for name, known_encoding in known_faces.items():
+            distance = face_recognition.face_distance([known_encoding], encodings[0])[0]
+            if distance <= tolerance:
+                print(f"Authenticated: {name} | Distance: {distance:.3f}")
+                return True
+
+        error_logging("recognition_failure", "No authorized faces matched")
+        print("Access Denied: Face not recognized")
+        return False
     except Exception as e:
         error_logging("face_detection", str(e))
         return False
-
 

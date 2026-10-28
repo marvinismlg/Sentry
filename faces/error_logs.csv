@@ -15,3 +15,7 @@ Timestamp,Function Name,Error Type,Message,Severity
 20261027-222934,process_image_frame,Face Verification,Face verification failed | Face distance: 0.876,Mid
 20261027-222934,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
 20261027-222944,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261028-100655,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261028-100656,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261028-100701,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261028-100701,process_image_frame,Face Verification,Face verification failed | Face distance: 0.914,Mid
