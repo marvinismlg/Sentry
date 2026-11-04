@@ -57,7 +57,11 @@ def get_model():
 
 def record_audio():
 
-    print("Recording voice for authentication...")
+    print("\n========== VOICE VERIFICATION ==========")
+    print("Selected input device:", sd.default.device)
+    print("Input device information:", sd.query_devices(kind="input"))
+    print(f"Recording for {RECORD_SECONDS} seconds...")
+    print("SPEAK NOW!")
 
     audio = sd.rec(
         int(SAMPLE_RATE * RECORD_SECONDS),
@@ -68,9 +72,14 @@ def record_audio():
 
     sd.wait()
 
+    print("Recording finished.")
+    print("Audio shape:", audio.shape)
+
     volume = np.sqrt(
         np.mean(audio.astype(np.float32) ** 2)
     )
+
+    print("Recorded audio volume (RMS):", volume)
 
     if volume < 100:
         raise ValueError(
@@ -86,16 +95,14 @@ def record_audio():
     temp_file.close()
 
     try:
-
         with wave.open(str(path), "wb") as wav_file:
-
             wav_file.setnchannels(1)
             wav_file.setsampwidth(2)
             wav_file.setframerate(SAMPLE_RATE)
-
             wav_file.writeframes(audio.tobytes())
 
-        print("Recording complete.")
+        print("Authentication recording saved.")
+        print("========================================\n")
 
         return path
 
@@ -206,16 +213,17 @@ def verify_microphone():
     path = None
 
     try:
+        print("Listening for verification voice...")
 
         path = record_audio()
+
+        print("Recording complete. Identifying speaker...")
 
         result = identify_speaker(path)
 
         return result
 
     finally:
-
-        # Always delete the temporary authentication recording.
         if path is not None:
             path.unlink(missing_ok=True)
 
