@@ -86,7 +86,7 @@ def error_logging(error_key, details=""):
 # I'm changing this func so that it loops through the faces folder and compares each individual face with the face of the person trying to authenticate
 # If any of the faces match, it authenticates the person, if none of them match, it still keeps the red flashing
 
-# SON @GRIFF (Create a different loop that scans for the faces in the face_files folder, then make a check to see if it detects a face)
+# SON
 def load_known_face():
     authorized_faces = {}
     for face_image in faces_list:
@@ -156,3 +156,4 @@ def process_image_frame(raw_bgr_frame):
     except Exception as e:
         error_logging("face_detection", str(e))
         return False
+
