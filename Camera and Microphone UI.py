@@ -386,21 +386,21 @@ def update_camera():
 # --------------------------------------------------
 # VOICE VERIFICATION
 # --------------------------------------------------
-
 def verification_worker():
 
     try:
         result = verify_microphone()
 
-        verification_queue.put(
-            ("success", result)
-        )
+        print("Verification result:", result)
 
-    except Exception as error:
+        verification_queue.put(("success", result))
 
-        verification_queue.put(
-            ("error", str(error))
-        )
+    except Exception as e:
+
+        print("Verification error:", e)
+
+        verification_queue.put(("error", str(e)))
+        
 
 
 def verify_voice():
@@ -414,20 +414,26 @@ def verify_voice():
 
     verify_button.configure(
         state="disabled",
-        text="Verifying..."
+        text="Listening..."
     )
 
-    enroll_button.configure(
-        state="disabled"
-    )
+    enroll_button.configure(state="disabled")
 
     recognition_status.configure(
-        text="Recording voice sample...",
+        text="Speak now! Recording your voice...",
         text_color="orange"
     )
 
-    # Prevent the monitor from using the mic during verification.
+    audio_level_bar.set(0)
+
+    # Stop the microphone monitor first.
     stop_microphone_monitor()
+
+    # Now update the status to reflect the actual recording.
+    microphone_status.configure(
+        text="Recording verification sample... SPEAK NOW!",
+        text_color="orange"
+    )
 
     threading.Thread(
         target=verification_worker,
@@ -436,58 +442,12 @@ def verify_voice():
 
     check_verification_results()
 
-
 def check_verification_results():
 
     global verification_running
 
-    if not running:
-        return
-
     try:
-
-        event, result = verification_queue.get_nowait()
-
-        if event == "success":
-
-            # Expected result:
-            # (name, score, message)
-
-            name, score, message = result
-
-            if name is not None:
-
-                recognition_status.configure(
-                    text=f"Recognized: {name} | Score: {score}",
-                    text_color="green"
-                )
-
-            else:
-
-                recognition_status.configure(
-                    text=f"Not recognized: {message}",
-                    text_color="red"
-                )
-
-        elif event == "error":
-
-            recognition_status.configure(
-                text=f"Verification error: {result}",
-                text_color="red"
-            )
-
-        verification_running = False
-
-        verify_button.configure(
-            state="normal",
-            text="Verify Voice"
-        )
-
-        enroll_button.configure(
-            state="normal"
-        )
-
-        start_microphone_monitor()
+        status, result = verification_queue.get_nowait()
 
     except queue.Empty:
 
@@ -495,6 +455,46 @@ def check_verification_results():
             100,
             check_verification_results
         )
+
+        return
+
+    if status == "success":
+
+        name, score, message = result
+
+        if name is not None:
+
+            recognition_status.configure(
+                text=f"Verified: {name} | Score: {score:.3f}",
+                text_color="green"
+            )
+
+        else:
+
+            recognition_status.configure(
+                text=f"Access Denied: {message}",
+                text_color="red"
+            )
+
+    else:
+
+        recognition_status.configure(
+            text=f"Verification Error: {result}",
+            text_color="red"
+        )
+
+    # Re-enable the buttons.
+    verification_running = False
+
+    verify_button.configure(
+        state="normal",
+        text="Verify Voice"
+    )
+
+    enroll_button.configure(state="normal")
+
+    # Restart microphone monitoring.
+    start_microphone_monitor()
 
 
 # --------------------------------------------------
