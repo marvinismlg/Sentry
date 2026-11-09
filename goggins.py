@@ -273,6 +273,8 @@ def stop_microphone_monitor():
     )
 
 def update_audio_level():
+    
+    global audio_after_id
 
     if not running:
         return
@@ -383,24 +385,23 @@ def update_camera():
     )
 
 
+
 # --------------------------------------------------
 # VOICE VERIFICATION
 # --------------------------------------------------
+
 def verification_worker():
-
     try:
-        result = verify_microphone()
+        result = verify_microphone(
+            status_callback=lambda message: verification_queue.put(
+                ("status", message)
+            )
+        )
 
-        print("Verification result:", result)
+        verification_queue.put(("result", result))
 
-        verification_queue.put(("success", result))
-
-    except Exception as e:
-
-        print("Verification error:", e)
-
-        verification_queue.put(("error", str(e)))
-        
+    except Exception as error:
+        verification_queue.put(("error", str(error)))
 
 
 def verify_voice():
@@ -426,10 +427,9 @@ def verify_voice():
 
     audio_level_bar.set(0)
 
-    # Stop the microphone monitor first.
+    # Stop the microphone monitor before recording.
     stop_microphone_monitor()
 
-    # Now update the status to reflect the actual recording.
     microphone_status.configure(
         text="Recording verification sample... SPEAK NOW!",
         text_color="orange"
@@ -440,62 +440,90 @@ def verify_voice():
         daemon=True
     ).start()
 
+    # Begin checking for verification updates.
     check_verification_results()
+
 
 def check_verification_results():
 
     global verification_running
 
+    if not running:
+        return
+
     try:
-        status, result = verification_queue.get_nowait()
+        # Process all available messages.
+        while True:
+
+            message_type, data = verification_queue.get_nowait()
+
+            if message_type == "status":
+
+                recognition_status.configure(
+                    text=data,
+                    text_color="orange"
+                )
+
+            elif message_type == "result":
+
+                name, score, message = data
+
+                if name is not None:
+
+                    recognition_status.configure(
+                        text=f"Access granted: {name} | Score: {score:.3f}",
+                        text_color="green"
+                    )
+
+                else:
+
+                    recognition_status.configure(
+                        text=f"Access denied: {message} | Score: {score:.3f}",
+                        text_color="red"
+                    )
+
+                verification_running = False
+
+                verify_button.configure(
+                    state="normal",
+                    text="Verify Voice"
+                )
+
+                enroll_button.configure(state="normal")
+
+                start_microphone_monitor()
+
+                return
+
+            elif message_type == "error":
+
+                recognition_status.configure(
+                    text=f"Verification error: {data}",
+                    text_color="red"
+                )
+
+                verification_running = False
+
+                verify_button.configure(
+                    state="normal",
+                    text="Verify Voice"
+                )
+
+                enroll_button.configure(state="normal")
+
+                start_microphone_monitor()
+
+                return
 
     except queue.Empty:
+        pass
 
+    # Continue checking while verification is running.
+    if verification_running:
         user_interface.after(
             100,
             check_verification_results
         )
-
-        return
-
-    if status == "success":
-
-        name, score, message = result
-
-        if name is not None:
-
-            recognition_status.configure(
-                text=f"Verified: {name} | Score: {score:.3f}",
-                text_color="green"
-            )
-
-        else:
-
-            recognition_status.configure(
-                text=f"Access Denied: {message}",
-                text_color="red"
-            )
-
-    else:
-
-        recognition_status.configure(
-            text=f"Verification Error: {result}",
-            text_color="red"
-        )
-
-    # Re-enable the buttons.
-    verification_running = False
-
-    verify_button.configure(
-        state="normal",
-        text="Verify Voice"
-    )
-
-    enroll_button.configure(state="normal")
-
-    # Restart microphone monitoring.
-    start_microphone_monitor()
-
 
 # --------------------------------------------------
 # VOICE ENROLLMENT POPUP
