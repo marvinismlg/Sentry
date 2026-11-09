@@ -6,6 +6,7 @@ import threading
 import queue
 import time
 
+from voice_recognition import build_profile_embeddings
 from pathlib import Path
 
 
@@ -23,6 +24,8 @@ class VoiceEnrollmentWindow(ctk.CTkToplevel):
         self.parent = parent
         self.on_close = on_close
         self.recording_window = None
+        self.profile_queue = queue.Queue()
+        self.profile_building = False
 
         self.title("Voice Enrollment")
         self.geometry("500x500")
@@ -147,15 +150,88 @@ class VoiceEnrollmentWindow(ctk.CTkToplevel):
             on_complete=self.enrollment_finished
         )
 
-    def enrollment_finished(self):
+    
+    def enrollment_finished(self, name):
+
         self.refresh_profiles()
+
+        self.profile_building = True
+
+        self.start_button.configure(state="disabled")
+
         self.status_label.configure(
-            text="Enrollment session finished.",
-            text_color="green"
+            text="Preparing voice recognition profile...",
+            text_color="orange"
         )
 
+        threading.Thread(
+            target=self.build_profile_worker,
+            args=(name,),
+            daemon=True
+        ).start()
+
+        self.after(100, self.poll_profile_queue)
+
+    def build_profile_worker(self, name):
+
+        try:
+
+            person_dir = VOICE_DIR / name
+
+            count = build_profile_embeddings(person_dir)
+
+            self.profile_queue.put(
+                ("success", name, count)
+            )
+
+        except Exception as error:
+
+            self.profile_queue.put(
+                ("error", name, str(error))
+            )
+
+    def poll_profile_queue(self):
+
+        if not self.winfo_exists():
+            return
+
+        try:
+
+            event, name, message = self.profile_queue.get_nowait()
+
+            if event == "success":
+
+                self.status_label.configure(
+                    text=f"{name}: {message} embeddings saved!",
+                    text_color="green"
+                )
+
+            else:
+
+                self.status_label.configure(
+                    text=f"Profile preparation failed: {message}",
+                    text_color="red"
+                )
+
+            self.profile_building = False
+
+            self.start_button.configure(state="normal")
+
+        except queue.Empty:
+
+            self.after(100, self.poll_profile_queue)
+
     def close_window(self):
+
+        if self.profile_building:
+            self.status_label.configure(
+                text="Please wait for profile preparation to finish.",
+                text_color="orange"
+            )
+            return
+
         if self.recording_window is not None:
+
             self.recording_window.cancel_recording()
 
         self.grab_release()
@@ -163,6 +239,7 @@ class VoiceEnrollmentWindow(ctk.CTkToplevel):
 
         if self.on_close:
             self.on_close()
+
 
 
 class RecordingWindow(ctk.CTkToplevel):
@@ -407,11 +484,14 @@ class RecordingWindow(ctk.CTkToplevel):
             command=self.close_complete
         )
 
+    
     def close_complete(self):
+
         if self.on_complete:
-            self.on_complete()
+            self.on_complete(self.name)
 
         self.destroy()
+
 
     def cancel_recording(self):
         if self.cancelled:
