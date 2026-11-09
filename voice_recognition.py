@@ -1,9 +1,12 @@
 from pathlib import Path
 import tempfile
 import wave
+import time
 
 import numpy as np
 import sounddevice as sd
+import torch
+import torch.nn.functional as F
 
 from speechbrain.inference.speaker import SpeakerRecognition
 
@@ -19,11 +22,13 @@ MODEL_DIR = str(
 )
 
 SAMPLE_RATE = 16000
-RECORD_SECONDS = 8
+RECORD_SECONDS = 5
 
-# Initial testing values, NOT security-certified thresholds.
-MATCH_THRESHOLD = 0.25
+MATCH_THRESHOLD = 0.45
 MIN_MARGIN = 0.05
+
+CACHE_FILENAME = "embeddings.pt"
+CACHE_VERSION = 1
 
 _model = None
 
@@ -52,6 +57,180 @@ def get_model():
 
 
 # -----------------------------------
+# Extract Speaker Embedding
+# -----------------------------------
+
+def extract_embedding(audio_path, model):
+
+    waveform = model.load_audio(str(audio_path))
+
+    batch = waveform.unsqueeze(0)
+
+    relative_length = torch.tensor([1.0])
+
+    with torch.inference_mode():
+
+        embedding = model.encode_batch(
+            batch,
+            relative_length,
+            normalize=False
+        )
+
+    return embedding.reshape(-1).detach().cpu().float()
+
+
+# -----------------------------------
+# Enrollment Cache
+# -----------------------------------
+
+def get_sample_manifest(samples):
+
+    manifest = []
+
+    for sample in samples:
+
+        stat = sample.stat()
+
+        manifest.append({
+            "name": sample.name,
+            "modified": stat.st_mtime_ns,
+            "size": stat.st_size
+        })
+
+    return manifest
+
+
+def load_or_create_profile_embeddings(person_dir, model):
+
+    samples = sorted(person_dir.glob("sample_*.wav"))
+
+    if len(samples) < 3:
+        return None
+
+    cache_path = person_dir / CACHE_FILENAME
+
+    manifest = get_sample_manifest(samples)
+
+    # Check whether a valid cache already exists.
+    if cache_path.exists():
+
+        try:
+
+            cached = torch.load(
+                cache_path,
+                map_location="cpu",
+                weights_only=True
+            )
+
+            if (
+                cached["version"] == CACHE_VERSION
+                and cached["manifest"] == manifest
+                and cached["embeddings"].shape[0] == len(samples)
+            ):
+
+                print(f"Using cached embeddings: {person_dir.name}")
+
+                return cached["embeddings"].float()
+
+        except Exception as error:
+
+            print(
+                f"Cache needs rebuilding for {person_dir.name}: {error}"
+            )
+
+    # Generate embeddings if the cache is missing or outdated.
+    print(f"Generating embeddings for {person_dir.name}...")
+
+    embeddings = []
+
+    for sample in samples:
+
+        embedding = extract_embedding(sample, model)
+
+        embeddings.append(embedding)
+
+    embeddings = torch.stack(embeddings)
+
+    cache_data = {
+        "version": CACHE_VERSION,
+        "manifest": manifest,
+        "embeddings": embeddings
+    }
+
+    temporary_path = person_dir / "embeddings.tmp"
+
+    torch.save(cache_data, temporary_path)
+
+    temporary_path.replace(cache_path)
+
+    print(
+        f"Saved {len(samples)} embeddings for {person_dir.name}"
+    )
+
+    return embeddings
+
+
+# -----------------------------------
+# Build All Existing Profiles
+# -----------------------------------
+
+def build_all_profile_embeddings():
+
+    if not VOICE_DIR.exists():
+        print("No voice profiles found.")
+        return
+
+    model = get_model()
+
+    for person_dir in sorted(VOICE_DIR.iterdir()):
+
+        if not person_dir.is_dir():
+            continue
+
+        samples = sorted(person_dir.glob("sample_*.wav"))
+
+        if len(samples) < 3:
+            print(f"Skipping incomplete profile: {person_dir.name}")
+            continue
+
+        try:
+
+            load_or_create_profile_embeddings(
+                person_dir,
+                model
+            )
+
+        except Exception as error:
+
+            print(
+                f"Could not build profile {person_dir.name}: {error}"
+            )
+
+    print("\nAll existing profile caches processed!")
+
+
+# -----------------------------------
+# Generate Embeddings After Enrollment
+# -----------------------------------
+
+def build_profile_embeddings(person_dir):
+
+    person_dir = Path(person_dir)
+
+    model = get_model()
+
+    embeddings = load_or_create_profile_embeddings(
+        person_dir,
+        model
+    )
+
+    if embeddings is None:
+        raise ValueError("Not enough enrollment samples.")
+
+    return len(embeddings)
+
+
+# -----------------------------------
 # Record Authentication Audio
 # -----------------------------------
 
@@ -73,7 +252,6 @@ def record_audio():
     sd.wait()
 
     print("Recording finished.")
-    print("Audio shape:", audio.shape)
 
     volume = np.sqrt(
         np.mean(audio.astype(np.float32) ** 2)
@@ -82,9 +260,7 @@ def record_audio():
     print("Recorded audio volume (RMS):", volume)
 
     if volume < 100:
-        raise ValueError(
-            "Microphone recording was too quiet."
-        )
+        raise ValueError("Microphone recording was too quiet.")
 
     temp_file = tempfile.NamedTemporaryFile(
         suffix=".wav",
@@ -95,18 +271,20 @@ def record_audio():
     temp_file.close()
 
     try:
+
         with wave.open(str(path), "wb") as wav_file:
+
             wav_file.setnchannels(1)
             wav_file.setsampwidth(2)
             wav_file.setframerate(SAMPLE_RATE)
             wav_file.writeframes(audio.tobytes())
 
         print("Authentication recording saved.")
-        print("========================================\n")
 
         return path
 
     except Exception:
+
         path.unlink(missing_ok=True)
         raise
 
@@ -117,10 +295,25 @@ def record_audio():
 
 def identify_speaker(test_path):
 
+    total_start = time.perf_counter()
+
     if not VOICE_DIR.exists():
         return None, 0.0, "No enrolled profiles"
 
     model = get_model()
+
+    # Extract the test embedding just once.
+    print("Extracting verification embedding...")
+
+    test_embedding = extract_embedding(
+        test_path,
+        model
+    )
+
+    print(
+        f"Test embedding generated in "
+        f"{time.perf_counter() - total_start:.2f}s"
+    )
 
     results = []
 
@@ -129,54 +322,45 @@ def identify_speaker(test_path):
         if not person_dir.is_dir():
             continue
 
-        samples = sorted(
-            person_dir.glob("sample_*.wav")
-        )
+        samples = sorted(person_dir.glob("sample_*.wav"))
 
-        # Require at least three samples per person.
         if len(samples) < 3:
             continue
 
-        scores = []
+        try:
 
-        for sample in samples:
+            enrolled_embeddings = load_or_create_profile_embeddings(
+                person_dir,
+                model
+            )
 
-            try:
+            # Compare against all cached samples.
+            scores = F.cosine_similarity(
+                test_embedding.unsqueeze(0),
+                enrolled_embeddings,
+                dim=1
+            )
 
-                score, prediction = model.verify_files(
-                    str(test_path),
-                    str(sample)
-                )
+            average_score = float(scores.mean().item())
 
-                score_value = float(
-                    score.squeeze().item()
-                )
-
-                if not np.isfinite(score_value):
-                    raise ValueError("Invalid model score")
-
-                scores.append(score_value)
-
-            except Exception as error:
-
-                print(
-                    f"Comparison failed for {sample}: {error}"
-                )
-
-                return None, 0.0, "Profile comparison failed"
-
-        if scores:
-
-            average_score = float(np.mean(scores))
+            if not np.isfinite(average_score):
+                raise ValueError("Invalid model score")
 
             results.append(
                 (person_dir.name, average_score)
             )
 
+        except Exception as error:
+
+            print(
+                f"Comparison failed for {person_dir.name}: {error}"
+            )
+
+            return None, 0.0, "Profile comparison failed"
+
     if not results:
         return None, 0.0, "No complete voice profiles"
 
-    # Highest similarity score first.
     results.sort(
         key=lambda item: item[1],
         reverse=True
@@ -184,52 +368,78 @@ def identify_speaker(test_path):
 
     best_name, best_score = results[0]
 
-    print("\nVoice comparison results:")
+    print("\n========== AUTHENTICATION RESULTS ==========")
 
     for name, score in results:
-        print(f"{name}: {score:.3f}")
+        print(f"{name}: {score:.4f}")
 
-    # Reject scores below the threshold.
+    print(f"\nBest match: {best_name}")
+    print(f"Best score: {best_score:.4f}")
+    print(f"Required score: {MATCH_THRESHOLD:.4f}")
+
     if best_score < MATCH_THRESHOLD:
-        return None, best_score, "Unknown speaker"
 
-    # Reject ambiguous matches.
+        print("ACCESS DENIED: Score below threshold.")
+
+        return None, best_score, "Score below authentication threshold"
+
     if len(results) > 1:
 
         second_score = results[1][1]
 
-        if best_score - second_score < MIN_MARGIN:
+        margin = best_score - second_score
+
+        print(f"Score margin: {margin:.4f}")
+        print(f"Required margin: {MIN_MARGIN:.4f}")
+
+        if margin < MIN_MARGIN:
+
+            print("ACCESS DENIED: Ambiguous speaker.")
+
             return None, best_score, "Ambiguous speaker"
 
-    return best_name, best_score, "Provisional match"
+    elapsed = time.perf_counter() - total_start
+
+    print(f"Identification time: {elapsed:.2f}s")
+    print(f"ACCESS GRANTED: {best_name}")
+
+    return best_name, best_score, "Access granted"
 
 
 # -----------------------------------
 # Main Verification Function
 # -----------------------------------
 
-def verify_microphone():
+def verify_microphone(status_callback=None):
 
     path = None
 
     try:
+
         print("Listening for verification voice...")
 
         path = record_audio()
 
         print("Recording complete. Identifying speaker...")
 
+        if status_callback:
+
+            status_callback(
+                "Stop speaking. Verifying speaker..."
+            )
+
         result = identify_speaker(path)
 
         return result
 
     finally:
+
         if path is not None:
             path.unlink(missing_ok=True)
 
 
 # -----------------------------------
-# Testing
+# Testing / Cache Preparation
 # -----------------------------------
 
 if __name__ == "__main__":
@@ -239,4 +449,8 @@ if __name__ == "__main__":
     print("Voice profiles:", VOICE_DIR)
 
     print("Model directory:", MODEL_DIR)
+
+    print("\nPreparing existing voice profiles...")
+
+    build_all_profile_embeddings()
 
