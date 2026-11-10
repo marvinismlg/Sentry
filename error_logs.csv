@@ -63,3 +63,41 @@ Timestamp,Function Name,Error Type,Message,Severity
 20261028-104613,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
 20261028-104617,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
 20261028-104617,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-102252,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-102252,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-110704,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-110704,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-110708,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-110708,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-110711,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-110711,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-110713,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-110713,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-110716,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-110716,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111017,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111017,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111019,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111019,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111021,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111021,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111027,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111027,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111029,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111029,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111036,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111036,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111043,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111043,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111049,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111049,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111343,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111343,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111349,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111349,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111355,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111355,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111401,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111401,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261109-111405,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261109-111405,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High

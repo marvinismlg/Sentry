@@ -4,3 +4,4 @@ sounddevice
 face-recognition
 numpy
 Pillow
+dotenv

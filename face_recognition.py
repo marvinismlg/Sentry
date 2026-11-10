@@ -156,4 +156,3 @@ def process_image_frame(raw_bgr_frame):
     except Exception as e:
         error_logging("face_detection", str(e))
         return False
-

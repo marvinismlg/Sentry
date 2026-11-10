@@ -7,6 +7,11 @@ from pathlib import Path
 # Son
 import os
 import time
+from face_recognition import process_image_frame
+from tkinter import messagebox
+import dotenv
+
+VOICE_API = os.getenv("API_KEY")
 
 # Command to run the virtual environment
 # First type "cd sentry" then copy and paste the command
@@ -150,11 +155,41 @@ def capture_webcam_screenshot():
         print("Cannot read ts")
     cap.release()
 
-# Adding a webcam screenshot feature that automatically saves photos of your face to the "faces" folder
-screenshot_button = ctk.CTkButton(master=frame, text="Take a webcam screenshot", font=("Arial Bold", 20), text_color="White", command=capture_webcam_screenshot)
+# ONBOARD CLIENT FLOW
+# CLIENT ONBOARDING PAGE
+
+secondary_frame = ctk.CTkFrame(master=app)
+rejection_message =ctk.CTkLabel(master=frame, text="Face not authenticated \n cannot perform onboarding", font=("Arial Bold", 20))
+def open_screenshot_onboarding_window():
+    with frame_lock:
+        img = None if raw_frame is None else raw_frame.copy()
+
+    if img is None:
+        rejection_message.configure(text="No camera frame available")
+        rejection_message.pack(pady=20, padx=20)
+        return
+
+    if recognition_service.process_image_frame(img):
+        rejection_message.pack_forget()
+        frame.pack_forget()
+        secondary_frame.pack(padx=20, pady=20, fill="both", expand=True)
+    else:
+        messagebox.showerror("Authentication Failed","Face not authenticated.\nCannot perform onboarding.")
+def return_to_main():
+    secondary_frame.pack_forget()
+    frame.pack(padx=20, pady=20, fill="both", expand=True)
+
+# Button on main page
+onboard_client_with_ss = ctk.CTkButton(master=frame,text="Onboard a New User",command=open_screenshot_onboarding_window)
+onboard_client_with_ss.pack(pady=20)
+
+# Button on onboarding page
+screenshot_button = ctk.CTkButton(master=secondary_frame,text="Take a Webcam Screenshot",command=capture_webcam_screenshot)
 screenshot_button.pack(pady=20)
 
-
+# Return to main page
+back_button = ctk.CTkButton(master=secondary_frame,text="Back to Main Page",command=return_to_main)
+back_button.pack(pady=10)
 # camera = cv2.VideoCapture(0, cv2.CAP_V4L2)
 camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 camera.set(cv2.CAP_PROP_FRAME_WIDTH, W)
