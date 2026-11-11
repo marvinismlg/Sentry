@@ -7,7 +7,7 @@ from pathlib import Path
 # Son
 import os
 import time
-from face_recognition import process_image_frame
+from face_recognition_file import process_image_frame
 from tkinter import messagebox
 import dotenv
 
@@ -18,7 +18,7 @@ VOICE_API = os.getenv("API_KEY")
 # .\faces\.venv\Scripts\python.exe .\camera.py
 # Were gonna have to use some extra libraries... I want to separate the recognition code from the webcam code just so we don't have files that are 400 lines long
 
-path = Path(__file__).resolve().parent / "face_recognition.py"
+path = Path(__file__).resolve().parent / "face_recognition_file.py"
 spec = importlib.util.spec_from_file_location("recognition_service", path)
 recognition_service = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(recognition_service)

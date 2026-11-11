@@ -101,3 +101,52 @@ Timestamp,Function Name,Error Type,Message,Severity
 20261109-111401,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
 20261109-111405,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
 20261109-111405,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261111-100947,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261111-100947,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261111-100955,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261111-100955,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261111-101002,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261111-101002,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261111-102124,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | name 'load_known_face' is not defined,High
+20261111-102133,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | name 'load_known_face' is not defined,High
+20261111-103107,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-103107,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-103107,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-103107,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-103107,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-103107,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261111-103107,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261111-103354,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-103354,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-103354,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-103354,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-103354,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-103354,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261111-103354,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261111-103730,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-103730,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | cannot access local variable 'face_name' where it is not associated with a value,High
+20261111-104352,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-104352,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-104352,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-104352,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-104352,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-104352,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261111-104352,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261111-104355,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-104355,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-104355,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-104355,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-104355,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | module 'face_recognition' has no attribute 'load_image_file',High
+20261111-104355,load_known_face,Reference Image,Reference image missing or does not contain exactly one face | No valid authorized faces found,High
+20261111-104355,scan_frame_for_faces,Face Detection,Facial recognition engine failed to process frame | No valid authorized faces found,High
+20261111-111001,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261111-111002,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261111-111002,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261111-111003,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261111-111003,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261111-111008,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261111-111022,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261111-111022,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261111-111023,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261111-111023,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261111-111024,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
