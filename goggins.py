@@ -1,4 +1,4 @@
-"""SENTINEL: Raspberry Pi face-first, voice-second local authentication UI."""
+"""SENTRY: Raspberry Pi face-first, voice-second local authentication UI."""
 from pathlib import Path
 import queue
 import threading
