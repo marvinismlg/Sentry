@@ -3,7 +3,7 @@
 
 import tkinter as tk
 
-
+# defined for the UI
 class LEDController:
 
     def __init__(self, parent):
