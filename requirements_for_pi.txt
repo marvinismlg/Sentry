@@ -1,0 +1,8 @@
+customtkinter
+opencv-python
+sounddevice
+numpy
+Pillow
+face-recognition
+face-recognition-models
+click

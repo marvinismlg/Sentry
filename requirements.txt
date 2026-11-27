@@ -1,0 +1,7 @@
+customtkinter
+opencv-python
+sounddevice
+face-recognition
+numpy
+Pillow
+dotenv
