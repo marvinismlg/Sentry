@@ -150,3 +150,18 @@ Timestamp,Function Name,Error Type,Message,Severity
 20261111-111023,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
 20261111-111023,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
 20261111-111024,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130001,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130001,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130002,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130003,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130003,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130014,process_image_frame,Face Verification,Face verification failed | Detected 0 faces,Mid
+20261127-130400,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130401,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130402,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130402,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130412,process_image_frame,Face Verification,Face verification failed | Detected 0 faces,Mid
+20261127-130821,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130822,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130822,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High
+20261127-130822,audio_callback,Audio Processing,"Audio callback reported an error or processing failure | input overflow, output underflow",High

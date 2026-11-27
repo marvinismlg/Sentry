@@ -133,6 +133,7 @@ app.geometry("1000x850")
 
 # LED window (for testing purposes for now)
 led_controller = LEDController(app)
+led_controller.show()
 
 frame = ctk.CTkFrame(app)
 frame.pack(padx=20, pady=20, fill="both", expand=True)
