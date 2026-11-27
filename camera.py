@@ -11,6 +11,8 @@ from face_recognition_file import process_image_frame
 from tkinter import messagebox
 import dotenv
 
+from led_controller import LEDController
+
 VOICE_API = os.getenv("API_KEY")
 
 # Command to run the virtual environment
@@ -128,6 +130,9 @@ ctk.set_default_color_theme("blue")
 app = ctk.CTk()
 app.title("Raspberry Pi 5 - Camera and Microphone")
 app.geometry("1000x850")
+
+# LED window (for testing purposes for now)
+led_controller = LEDController(app)
 
 frame = ctk.CTkFrame(app)
 frame.pack(padx=20, pady=20, fill="both", expand=True)
@@ -272,6 +277,12 @@ def recognition_done(success=False, error=None):
     global busy, authenticated
     busy = False
     authenticated = bool(success)
+
+    if authenticated:
+        led_controller.access_granted()
+    else:
+        led_controller.access_denied()
+
     flash_screen(authenticated)
     rec_button.configure(state="normal", text="Run Facial Recognition")
     mic_button.configure(state="normal" if authenticated and stream is not None else "disabled")
